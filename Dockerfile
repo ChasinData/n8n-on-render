@@ -1,18 +1,20 @@
 FROM node:18
 
+# Set working directory
 WORKDIR /app
+
+# Copy full monorepo into the image
 COPY . .
 
-# Install lerna globally
-RUN npm install -g lerna
+# Install global tools
+RUN npm install -g pnpm lerna
 
-# Install deps and bootstrap monorepo
-RUN npm install
-RUN lerna bootstrap
+# Install and link packages
+RUN pnpm install
+RUN pnpm run build
 
-# Build packages
-RUN npm run build
-
-# Expose and run
+# Expose default port
 EXPOSE 5678
-CMD ["npm", "run", "start"]
+
+# Start n8n
+CMD ["pnpm", "start"]
